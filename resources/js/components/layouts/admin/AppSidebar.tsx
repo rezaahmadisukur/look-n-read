@@ -24,12 +24,12 @@ const data = {
     navMain: [
         {
             title: "All Comics",
-            url: "#",
+            url: "http://look-n-read.test/admin/dashboard",
             icon: Book,
         },
         {
             title: "Add Comic",
-            url: "#",
+            url: "http://look-n-read.test/admin/add",
             icon: DiamondPlus,
         },
     ],

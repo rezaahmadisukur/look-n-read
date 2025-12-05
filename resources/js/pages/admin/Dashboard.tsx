@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import AdminLayout from "@/components/layouts/admin/AdminLayout";
+import { Link } from "react-router-dom";
 
 const usersData = [
     {
@@ -127,8 +128,13 @@ const Dashboard = () => {
                                     size="sm"
                                     className="bg-primary cursor-pointer"
                                 >
-                                    <Plus className="h-4 w-4 mr-2" />
-                                    Add User
+                                    <Link
+                                        to={"/admin/add"}
+                                        className="flex gap-2"
+                                    >
+                                        <Plus className="h-4 w-4 mr-2" />
+                                        Add User
+                                    </Link>
                                 </Button>
                             </div>
                         </div>
