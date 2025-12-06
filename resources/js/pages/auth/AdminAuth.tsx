@@ -1,9 +1,12 @@
+import { AdminFormLogin } from "@/components/auth/LoginForm";
 import { Divide } from "lucide-react";
 
 const AdminAuth = () => {
     return (
-        <div>
-            <h1>Admin Auth</h1>
+        <div className="grid place-content-center  min-h-screen">
+            <div className="w-full max-w-md">
+                <AdminFormLogin />
+            </div>
         </div>
     );
 };

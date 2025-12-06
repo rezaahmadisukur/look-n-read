@@ -5,8 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -29,19 +28,40 @@ import { Link } from "react-router-dom";
 const usersData = [
     {
         id: "1",
-        avatar: "ok",
-        name: "ok",
-        email: "ok",
-        role: "ok",
-        lastLogin: "ok",
-        twoStep: "ok",
-        joinedDate: "ok",
+        avatar: "https://i.pinimg.com/1200x/b8/74/67/b874672f9b910c34f7981700166956ce.jpg",
+        title: "Solo Leveling",
+        type: "Manhwa",
+        status: "Completed",
+        created_at: "24-10-2015",
+    },
+    {
+        id: "2",
+        avatar: "https://i.pinimg.com/736x/2b/6c/a7/2b6ca73ebdae22fd7d3d29b070dc1973.jpg",
+        title: "One Piece",
+        type: "Manga",
+        status: "Ongoing",
+        created_at: "24-10-2005",
+    },
+    {
+        id: "3",
+        avatar: "https://i.pinimg.com/1200x/a6/3d/f1/a63df1a5d9c1aeab88d5fde6811ca9ff.jpg",
+        title: "Magic Emperor",
+        type: "Manhua",
+        status: "Ongoing",
+        created_at: "24-10-2020",
+    },
+    {
+        id: "4",
+        avatar: "https://i.pinimg.com/736x/87/25/52/87255234d23e52c5b02d61e8f5bc57b1.jpg",
+        title: "Wu Dong Qian Kun",
+        type: "Manhua",
+        status: "Ongoing",
+        created_at: "24-10-2023",
     },
 ];
 
 const Dashboard = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
     const itemsPerPage = 6;
     const totalPages = Math.ceil(usersData.length / itemsPerPage);
 
@@ -49,33 +69,6 @@ const Dashboard = () => {
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
-
-    const toggleUserSelection = (userId: string) => {
-        setSelectedUsers((prev) =>
-            prev.includes(userId)
-                ? prev.filter((id) => id !== userId)
-                : [...prev, userId]
-        );
-    };
-
-    const toggleAllUsers = () => {
-        if (
-            selectedUsers.length === currentUsers.length &&
-            currentUsers.length > 0
-        ) {
-            setSelectedUsers([]);
-        } else {
-            setSelectedUsers(currentUsers.map((user) => user.id));
-        }
-    };
-
-    const getInitials = (name: string) => {
-        return name
-            .split(" ")
-            .map((n) => n[0])
-            .join("")
-            .toUpperCase();
-    };
 
     return (
         <AdminLayout>
@@ -145,30 +138,20 @@ const Dashboard = () => {
                             <table className="w-full">
                                 <thead>
                                     <tr className="border-b border-border bg-muted/50">
-                                        <th className="text-left p-4 font-medium text-sm text-muted-foreground">
-                                            <Checkbox
-                                                checked={
-                                                    selectedUsers.length ===
-                                                        currentUsers.length &&
-                                                    currentUsers.length > 0
-                                                }
-                                                onCheckedChange={toggleAllUsers}
-                                            />
+                                        <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
+                                            Cover
                                         </th>
                                         <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
-                                            User
+                                            Title
                                         </th>
                                         <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
-                                            Role
+                                            Author
                                         </th>
-                                        <th className="text-left p-4 font-medium text-sm text-nowrap text-muted-foreground uppercase tracking-wider">
-                                            Last Login
+                                        <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
+                                            Status
                                         </th>
-                                        <th className="text-left p-4 font-medium text-sm text-nowrap text-muted-foreground uppercase tracking-wider">
-                                            Two-Step
-                                        </th>
-                                        <th className="text-left p-4 font-medium text-sm text-nowrap text-muted-foreground uppercase tracking-wider">
-                                            Joined Date
+                                        <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
+                                            Created At
                                         </th>
                                         <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
                                             Actions
@@ -182,57 +165,33 @@ const Dashboard = () => {
                                             className="border-b border-border hover:bg-muted/30 transition-colors"
                                         >
                                             <td className="p-4">
-                                                <Checkbox
-                                                    checked={selectedUsers.includes(
-                                                        user.id
-                                                    )}
-                                                    onCheckedChange={() =>
-                                                        toggleUserSelection(
-                                                            user.id
-                                                        )
-                                                    }
-                                                />
-                                            </td>
-                                            <td className="p-4">
-                                                <div className="flex items-center gap-3">
-                                                    <Avatar className="h-10 w-10 bg-muted">
+                                                <div className="flex items-center gap-3 w-fit">
+                                                    <Avatar className="h-20 w-20 bg-muted relative">
                                                         <AvatarImage
                                                             src={user.avatar}
-                                                            alt={user.name}
+                                                            alt={user.title}
+                                                            className="absolute top-0 left-0 object-cover"
                                                         />
-                                                        <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                                                            {getInitials(
-                                                                user.name
-                                                            )}
-                                                        </AvatarFallback>
                                                     </Avatar>
-                                                    <div>
-                                                        <div className="font-medium text-foreground">
-                                                            {user.name}
-                                                        </div>
-                                                        <div className="text-sm text-muted-foreground">
-                                                            {user.email}
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             </td>
                                             <td className="p-4">
                                                 <span className="text-sm text-muted-foreground">
-                                                    {user.role}
+                                                    {user.title}
                                                 </span>
                                             </td>
                                             <td className="p-4">
                                                 <span className="text-sm font-medium text-foreground text-nowrap">
-                                                    {user.lastLogin}
+                                                    {user.type}
                                                 </span>
                                             </td>
                                             <td className="p-4 text-center">
-                                                {user.twoStep ? (
+                                                {user.status ? (
                                                     <Badge
                                                         variant="outline"
                                                         className="bg-green-50 text-green-700 border-green-200 dark:bg-green-950 dark:text-green-400 dark:border-green-800"
                                                     >
-                                                        Enabled
+                                                        {user.status}
                                                     </Badge>
                                                 ) : (
                                                     <span className="text-sm text-muted-foreground">
@@ -242,7 +201,7 @@ const Dashboard = () => {
                                             </td>
                                             <td className="p-4">
                                                 <span className="text-sm text-muted-foreground text-nowrap">
-                                                    {user.joinedDate}
+                                                    {user.created_at}
                                                 </span>
                                             </td>
                                             <td className="p-4">
@@ -266,8 +225,10 @@ const Dashboard = () => {
                                                         <DropdownMenuItem className="cursor-pointer">
                                                             View Details
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem className="text-destructive cursor-pointer">
-                                                            Delete
+                                                        <DropdownMenuItem className="cursor-pointer">
+                                                            <Button className="bg-destructive hover:bg-destructive/80 w-full">
+                                                                Delete
+                                                            </Button>
                                                         </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>

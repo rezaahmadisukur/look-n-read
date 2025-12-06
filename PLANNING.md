@@ -46,11 +46,8 @@ Menyimpan informasi utama setiap judul komik.
 | `slug`        | VARCHAR UNQ | URL-friendly identifier (cth: "one-piece") |
 | `synopsis`    | LONGTEXT    | Sinopsis cerita lengkap                    |
 | `author`      | VARCHAR     | Nama pengarang/penulis                     |
-| `artist`      | VARCHAR     | Nama ilustrator/seniman                    |
 | `cover_image` | VARCHAR     | Path ke file cover (guest/covers/)         |
 | `status`      | ENUM        | 'Ongoing', 'Completed', 'Hiatus'           |
-| `rating`      | DECIMAL     | Rating 1-10 dari user (future)             |
-| `view_count`  | INT         | Total views (untuk statistik)              |
 | `created_at`  | TIMESTAMP   | Tanggal upload ke platform                 |
 | `updated_at`  | TIMESTAMP   | Tanggal update terakhir                    |
 
