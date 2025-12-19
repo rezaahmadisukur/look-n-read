@@ -16,4 +16,11 @@ export default defineConfig({
             "@": path.resolve(__dirname, "./resources/js"),
         },
     },
+    server: {
+        watch: {
+            usePolling: true,
+            interval: 1000,
+            ignored: ["**/vendor/**"],
+        },
+    },
 });
