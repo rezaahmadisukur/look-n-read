@@ -2,18 +2,15 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         $this->call([
             CreateAdminUser::class,
+            ComicSeeder::class, 
         ]);
 
         // Create comics and chapters
@@ -24,8 +21,8 @@ class DatabaseSeeder extends Seeder
                     ->for($comic)
                     ->state([
                         'number' => $i,
-                        'title' => 'Chapter ' . $i . ': ' . fake()->sentence(3),
-                        'slug' => \Illuminate\Support\Str::slug('chapter-' . $i . '-' . fake()->word()),
+                        'title' => 'Chapter ' . $i,
+                        'slug' => \Illuminate\Support\Str::slug('chapter-' . $i),
                     ])->create();
             }
         });
