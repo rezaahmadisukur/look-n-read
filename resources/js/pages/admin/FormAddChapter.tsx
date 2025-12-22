@@ -26,9 +26,11 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ChevronLeft, X } from "lucide-react";
 import { toast } from "sonner";
+import { useEffect, useState } from "react";
+import { getApi } from "@/services/api";
 
 const formAddComicSchema = z.object({
     title: z.string().min(1, { message: "Title is required" }),
@@ -36,21 +38,23 @@ const formAddComicSchema = z.object({
         .string()
         .min(1, { message: "Slug is required" })
         .regex(/^\S*$/, "Tidak boleh ada spasi"),
-    author: z.string().min(1, { message: "Author is required" }),
+    chapter_number: z.number(),
     status: z.string().min(1, { message: "Status is required" }),
     type: z.string().min(1, { message: "Type is required" }),
     synopsis: z.string().min(1, { message: "Synopsis is required" }),
     cover: z.array(z.instanceof(File)).min(1, { message: "Cover is required" }),
 });
 
-const FormAddComic = () => {
+const FormAddChapter = () => {
     const navigate = useNavigate();
+    const { id } = useParams();
+    const [comicName, setComicName] = useState<string>();
     const form = useForm<z.infer<typeof formAddComicSchema>>({
         resolver: zodResolver(formAddComicSchema),
         defaultValues: {
             title: "",
             slug: "",
-            author: "",
+            chapter_number: 1,
             status: "",
             type: "",
             synopsis: "",
@@ -64,7 +68,7 @@ const FormAddComic = () => {
         const formData = new FormData();
         formData.append("title", values.title);
         formData.append("slug", values.slug);
-        formData.append("author", values.author);
+        formData.append("chapter_number", values.chapter_number);
         formData.append("type", values.type);
         formData.append("status", values.status);
         formData.append("synopsis", values.synopsis);
@@ -100,19 +104,38 @@ const FormAddComic = () => {
         }
     };
 
+    // get the comic name
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const response = await getApi(`auth/admin/comics/${id}`);
+                setComicName(response?.data.title);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        load();
+    }, []);
+
     return (
         <AdminLayout>
             <div className="w-full space-y-6 my-8 mx-auto max-w-full">
                 {/* Main Card */}
                 <Card className="pb-0 gap-0 mx-6 md:mx-8">
                     <CardHeader className="border-b border-border gap-0">
-                        <div className="flex gap-10  items-end">
+                        <div className="flex gap-10  items-center">
                             <Link to={"/admin/dashboard"}>
                                 <ChevronLeft className="size-8 text-primary hover:text-primary/60 transition-all duration-300" />
                             </Link>
-                            <h1 className="text-primary text-4xl font-bold capitalize">
-                                Add comic
-                            </h1>
+                            <div className="flex flex-col">
+                                <h1 className="text-primary text-4xl font-bold capitalize">
+                                    Add New Chapter
+                                </h1>
+                                <h3 className="text-primary text-2xl font-bold capitalize">
+                                    Comic Name : {comicName}
+                                </h3>
+                            </div>
                         </div>
                     </CardHeader>
                     <CardContent>
@@ -131,7 +154,7 @@ const FormAddComic = () => {
                                                 <FormControl>
                                                     <Input
                                                         type="text"
-                                                        placeholder="Example: One Piece, Solo Leveling, Magic Emperor, etc."
+                                                        placeholder="Example: Chapter 01, Chapter 02, Chapter 03, etc. "
                                                         {...field}
                                                     />
                                                 </FormControl>
@@ -149,7 +172,7 @@ const FormAddComic = () => {
                                                 <FormControl>
                                                     <Input
                                                         type="text"
-                                                        placeholder="Example: one-piece, dragon-ball, solo-leveling, etc."
+                                                        placeholder="Example: chapter-01, chapter-02, chapter-03, etc"
                                                         {...field}
                                                     />
                                                 </FormControl>
@@ -158,15 +181,15 @@ const FormAddComic = () => {
                                     />
                                     <FormField
                                         control={form.control}
-                                        name="author"
+                                        name="chapter_number"
                                         render={({ field }) => (
                                             <FormItem className="w-full">
-                                                <FormLabel>Author</FormLabel>
+                                                <FormLabel>Number</FormLabel>
                                                 <FormControl>
                                                     <Input
-                                                        type="text"
+                                                        type="number"
                                                         {...field}
-                                                        placeholder="Example: Eiichiro Oda, Akutami Gege, etc."
+                                                        placeholder="Example: 1.0, 2.0, 10.5, 15.5, etc."
                                                     />
                                                 </FormControl>
                                             </FormItem>
@@ -314,4 +337,4 @@ const FormAddComic = () => {
     );
 };
 
-export default FormAddComic;
+export default FormAddChapter;

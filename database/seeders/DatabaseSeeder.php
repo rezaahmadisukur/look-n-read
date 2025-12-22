@@ -10,7 +10,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             CreateAdminUser::class,
-            ComicSeeder::class, 
+            ComicSeeder::class,
         ]);
 
         // Create comics and chapters

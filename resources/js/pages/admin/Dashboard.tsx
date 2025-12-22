@@ -213,7 +213,7 @@ const Dashboard = () => {
                                                                         }
                                                                     >
                                                                         <Link
-                                                                            to={`/admin/chapters/${comic.id}`}
+                                                                            to={`/admin/comics/${comic.id}`}
                                                                         >
                                                                             Chapters
                                                                         </Link>

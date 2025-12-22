@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChapterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComicController;
@@ -35,5 +36,8 @@ Route::prefix('auth/admin')->group(function () {
     // Route::get('/comics/slug/{slug}', [ComicController::class, 'showBySlug']); // Show by slug
     Route::put('/comics/{comic:id}', [ComicController::class, 'update']); // Update comic
     Route::delete('/comics/{comic:id}', [ComicController::class, 'destroy']); // Delete comic
+
+    // Chapter Routes
+    Route::get('/comics/{comic:id}/chapters', [ChapterController::class, 'index']);
 });
 

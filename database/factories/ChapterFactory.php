@@ -28,8 +28,6 @@ class ChapterFactory extends Factory
             'title' => $title,
             'slug' => Str::slug($title),
             'number' => $number,
-            'body' => fake()->paragraphs(4, true),
-            'is_published' => $isPublished,
             'published_at' => $isPublished ? fake()->dateTimeBetween('-2 years', 'now') : null,
         ];
     }
