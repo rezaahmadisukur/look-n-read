@@ -21,6 +21,7 @@ export default function Chapters() {
     // Anggap 'comic.chapters' adalah data yang didapat dari API Laravel
     const { id } = useParams();
     const [comic, setComic] = useState<TChapters>();
+    const [chapters, setChapters] = useState();
 
     const fetchData = useCallback(async () => {
         try {
@@ -35,6 +36,20 @@ export default function Chapters() {
         fetchData();
     }, [fetchData]);
 
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const response = await getApi(
+                    `auth/admin/comics/${id}/chapters`
+                );
+                console.log(response);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        load();
+    }, []);
+
     return (
         <AdminLayout>
             <div className="p-8">
@@ -45,7 +60,7 @@ export default function Chapters() {
                     </h1>
 
                     {/* Tombol Tambah Chapter (Mengarah ke route upload yang tadi kita buat) */}
-                    <Link to={``}>
+                    <Link to={`/admin/comics/${id}/chapters`}>
                         <Button>
                             <Plus className="mr-2 h-4 w-4" /> Tambah Chapter
                             Baru

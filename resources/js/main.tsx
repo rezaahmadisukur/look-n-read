@@ -13,6 +13,7 @@ import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import FormEditComic from "./pages/admin/FormEditComic";
 import { Toaster } from "./components/ui/sonner";
 import Chapters from "./pages/admin/Chapters";
+import FormAddChapter from "./pages/admin/FormAddChapter";
 
 function App() {
     return (
@@ -61,10 +62,19 @@ function App() {
 
                     {/* Route Chapters Admin */}
                     <Route
-                        path="/admin/chapters/:id"
+                        path="/admin/comics/:id"
                         element={
                             <ProtectedRoute>
                                 <Chapters />
+                            </ProtectedRoute>
+                        }
+                    />
+
+                    <Route
+                        path="/admin/comics/:id/chapters"
+                        element={
+                            <ProtectedRoute>
+                                <FormAddChapter />
                             </ProtectedRoute>
                         }
                     />
