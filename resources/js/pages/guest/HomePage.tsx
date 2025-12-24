@@ -1,38 +1,38 @@
-import React from "react";
+import GuestLayout from "@/components/layouts/guest/guestLayout";
+import { IComic } from "@/types/index.type";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+document.title = "Homepage";
+
 export default function HomePage() {
+    const [comics, setComics] = useState<IComic[]>([]);
+
     const comicTypes = [
         { name: "Manga", count: 150, seed: "manga" },
         { name: "Manhwa", count: 89, seed: "manhwa" },
         { name: "Manhua", count: 67, seed: "manhua" },
     ];
 
-    return (
-        <div className="min-h-screen bg-slate-950">
-            {/* Header */}
-            <nav className="bg-black/40 backdrop-blur-sm border-b border-white/10 sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-16">
-                        <div className="flex items-center">
-                            <h1 className="text-2xl font-bold text-white">
-                                Look 'N Read
-                            </h1>
-                        </div>
-                        <div className="flex gap-4">
-                            <button className="px-4 py-2 text-gray-300 hover:text-white transition-colors">
-                                Latest
-                            </button>
-                            <button className="px-4 py-2 text-gray-300 hover:text-white transition-colors">
-                                Popular
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const res = await axios.get("/api/comics");
+                setComics(res.data.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        load();
+    }, []);
 
+    console.log(comics);
+
+    return (
+        <>
             {/* Main Content */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <GuestLayout>
                 {/* Type Categories */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
                     {comicTypes.map((type) => (
@@ -72,28 +72,34 @@ export default function HomePage() {
                         Latest Updates
                     </h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((i) => (
-                            <div key={i} className="group cursor-pointer">
-                                <div className="aspect-[2/3] bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all">
-                                    <img
-                                        src={`https://picsum.photos/seed/comic${i}/300/450`}
-                                        alt={`Comic ${i}`}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                    />
+                        {comics.length > 0 &&
+                            comics.map((i) => (
+                                <div
+                                    key={i.id}
+                                    className="group cursor-pointer"
+                                >
+                                    <Link to={`/${i.slug}`}>
+                                        <div className="aspect-[2/3] bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all">
+                                            <img
+                                                src={i.cover_image}
+                                                alt={`Comic ${i.title}`}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                            />
+                                        </div>
+                                    </Link>
+                                    <div className="mt-2">
+                                        <h3 className="text-sm font-medium text-gray-300 truncate group-hover:text-purple-400 transition-colors">
+                                            {i.title}
+                                        </h3>
+                                        <p className="text-xs text-gray-600">
+                                            Chapter
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="mt-2">
-                                    <h3 className="text-sm font-medium text-gray-300 truncate group-hover:text-purple-400 transition-colors">
-                                        Comic Title {i}
-                                    </h3>
-                                    <p className="text-xs text-gray-600">
-                                        Chapter {i * 5}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
+                            ))}
                     </div>
                 </div>
-            </div>
-        </div>
+            </GuestLayout>
+        </>
     );
 }

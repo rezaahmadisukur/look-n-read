@@ -15,6 +15,7 @@ import { Toaster } from "./components/ui/sonner";
 import Chapters from "./pages/admin/Chapters";
 import FormAddChapter from "./pages/admin/FormAddChapter";
 import FormEditChapter from "./pages/admin/FormEditChapter";
+import DetailPage from "./pages/guest/DetailPage";
 
 function App() {
     return (
@@ -90,6 +91,8 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
+
+                    <Route path="/:slug" element={<DetailPage />} />
 
                     {/* Fallback */}
                     <Route path="*" element={<NotFound />} />

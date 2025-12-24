@@ -114,8 +114,6 @@ class ComicController extends Controller
     public function show(Comic $comic): JsonResponse
     {
         try {
-            // $comic = Comic::where('slug', $comic->slug);
-
             if (!$comic)
                 return response()->json(['msg' => 'Gak ketemu'], 404);
 
