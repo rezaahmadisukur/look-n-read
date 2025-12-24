@@ -123,6 +123,7 @@ const FormEditComic = () => {
             );
             toast.success(response.data.message);
             fetchData();
+            navigate("/admin/dashboard");
             form.reset();
         } catch (error) {
             const axiosError = error as AxiosError;
