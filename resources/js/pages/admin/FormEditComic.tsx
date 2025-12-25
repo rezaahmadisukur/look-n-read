@@ -31,6 +31,7 @@ import { useCallback, useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { toast } from "sonner";
 import { getApi } from "@/services/api";
+import GenreModalSelector from "@/components/guest-comp/GenreModalSelector";
 
 const formAddComicSchema = z.object({
     title: z.string().min(1, { message: "Title is required" }),
@@ -43,6 +44,7 @@ const formAddComicSchema = z.object({
     type: z.string().min(1, { message: "Type is required" }),
     synopsis: z.string().min(1, { message: "Synopsis is required" }),
     cover: z.array(z.instanceof(File)).optional(),
+    genres: z.array(z.number()).min(1, { message: "Pilih minimal 1 genre" }),
 });
 
 interface ComicType {
@@ -65,6 +67,7 @@ const FormEditComic = () => {
             type: "",
             synopsis: "",
             cover: [],
+            genres: [],
         },
     });
 
@@ -72,14 +75,21 @@ const FormEditComic = () => {
         try {
             const response = await axios.get(`/api/comics/${slug}`);
             setComic(response?.data);
+            const data = response?.data;
+
+            const currentGenreIds = data.genres
+                ? data.genres.map((g: any) => g.id)
+                : [];
+
             form.reset({
-                title: response?.data.title,
-                slug: response?.data.slug,
-                author: response?.data.author,
-                status: response?.data.status,
-                type: response?.data.type,
-                synopsis: response?.data.synopsis,
+                title: data.title,
+                slug: data.slug,
+                author: data.author,
+                status: data.status,
+                type: data.type,
+                synopsis: data.synopsis,
                 cover: [],
+                genres: currentGenreIds,
             });
         } catch (error) {
             console.error(error);
@@ -110,6 +120,16 @@ const FormEditComic = () => {
                 formData.append("cover_image", file);
             });
         }
+
+        // --- BAGIAN PENTING: HANDLE GENRES ---
+        // Kita harus loop array ID dan append satu per satu dengan tanda kurung []
+        // Agar Laravel membacanya sebagai array: genres[0], genres[1], dst.
+        if (values.genres && values.genres.length > 0) {
+            values.genres.forEach((genreId) => {
+                formData.append("genres[]", String(genreId));
+            });
+        }
+
         try {
             const response = await axios.post(
                 `/api/auth/admin/comics/${slug}`,
@@ -306,6 +326,37 @@ const FormEditComic = () => {
                                             </FormItem>
                                         )}
                                     />
+
+                                    <FormField
+                                        control={form.control}
+                                        name="genres"
+                                        render={({ field }) => (
+                                            <FormItem className="mt-5">
+                                                <FormLabel>Genres</FormLabel>
+                                                <FormControl>
+                                                    {/* Komponen Modal Kita */}
+                                                    <GenreModalSelector
+                                                        selectedGenres={
+                                                            field.value
+                                                        } // Kirim value dari form
+                                                        onSave={field.onChange} // Fungsi update form pas tombol Save diklik
+                                                        error={
+                                                            form.formState
+                                                                .errors.genres
+                                                                ?.message
+                                                        } // Kirim error buat styling merah
+                                                    />
+                                                </FormControl>
+                                                <FormDescription>
+                                                    Minimal pilih 1 genre. Klik
+                                                    tombol di atas untuk membuka
+                                                    pilihan.
+                                                </FormDescription>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+
                                     <div className="grid grid-cols-2 mt-10">
                                         <div className="flex justify-center">
                                             {comic?.image_url && (

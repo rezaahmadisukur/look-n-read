@@ -16,9 +16,10 @@ class ComicController extends Controller
     /**
      * Display a listing of comics.
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-        $query = Comic::query();
+        // 1. PENTING: Tambahkan with('genres') biar datanya ke-load
+        $query = Comic::with('genres');
 
         // Search by title or author
         if ($request->has('search')) {
@@ -37,6 +38,14 @@ class ComicController extends Controller
         // Filter by type
         if ($request->has('type')) {
             $query->where('type', $request->input('type'));
+        }
+
+        // 2. BARU: Filter by Genre
+        // Logic: Cari komik yang PUNYA (whereHas) genre dengan ID tertentu
+        if ($request->has('genre_id')) {
+            $query->whereHas('genres', function ($q) use ($request) {
+                $q->where('id', $request->input('genre_id'));
+            });
         }
 
         $comics = $query->latest()->paginate(12);
@@ -132,7 +141,7 @@ class ComicController extends Controller
                 return response()->json(['msg' => 'Gak ketemu'], 404);
 
             // Bagian yang bikin error
-            $comic->load('chapters');
+            $comic->load(['chapters', 'genres']);
 
             return response()->json($comic);
 
@@ -214,7 +223,7 @@ class ComicController extends Controller
         // 4. Update DB (Comic Data)
         // PENTING: Kita harus buang 'genres' dari array validated sebelum update ke tabel comics
         // Karena tabel comics tidak punya kolom 'genres'.
-        $comicData = \Illuminate\Support\Arr::except($validated, ['genres']);
+        $comicData = Arr::except($validated, ['genres']);
 
         $comic->update($comicData);
 

@@ -64,74 +64,76 @@ const Dashboard = () => {
         load();
     }, []);
 
+    const comic = [];
+
     return (
         <AdminLayout>
             <div className="w-full space-y-6 my-8 mx-auto max-w-full">
                 {/* Main Card */}
-                {comics.length > 0 ? (
-                    <Card className="pb-0 gap-0 mx-6 md:mx-8">
-                        <CardHeader className="border-b border-border gap-0">
-                            <div className="flex flex-col sm:flex-row items-center gap-4">
-                                <div className="relative flex-1 max-w-sm">
-                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                    <Input
-                                        placeholder="Search comic"
-                                        className="pl-10"
-                                    />
-                                </div>
-                                <div className="sm:ml-auto flex items-center gap-2 flex-wrap justify-center">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="cursor-pointer"
-                                    >
-                                        <Filter className="h-4 w-4 mr-2" />
-                                        Filter
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        className="bg-primary cursor-pointer"
-                                    >
-                                        <Link
-                                            to={"/admin/add"}
-                                            className="flex gap-2"
-                                        >
-                                            <Plus className="h-4 w-4 mr-2" />
-                                            Add comic
-                                        </Link>
-                                    </Button>
-                                </div>
+                <Card className="pb-0 gap-0 mx-6 md:mx-8">
+                    <CardHeader className="border-b border-border gap-0">
+                        <div className="flex flex-col sm:flex-row items-center gap-4">
+                            <div className="relative flex-1 max-w-sm">
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                    placeholder="Search comic"
+                                    className="pl-10"
+                                />
                             </div>
-                        </CardHeader>
-                        <CardContent className="p-0">
-                            {/* Table */}
-                            <div className="overflow-x-auto">
-                                <table className="w-full">
-                                    <thead>
-                                        <tr className="border-b border-border bg-muted/50">
-                                            <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
-                                                Cover
-                                            </th>
-                                            <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
-                                                Title
-                                            </th>
-                                            <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
-                                                Type
-                                            </th>
-                                            <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
-                                                Status
-                                            </th>
-                                            <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
-                                                Created At
-                                            </th>
-                                            <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
-                                                Actions
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {comics.length > 0 &&
-                                            currentComics.map((comic) => (
+                            <div className="sm:ml-auto flex items-center gap-2 flex-wrap justify-center">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="cursor-pointer"
+                                >
+                                    <Filter className="h-4 w-4 mr-2" />
+                                    Filter
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    className="bg-primary cursor-pointer"
+                                >
+                                    <Link
+                                        to={"/admin/add"}
+                                        className="flex gap-2"
+                                    >
+                                        <Plus className="h-4 w-4 mr-2" />
+                                        Add comic
+                                    </Link>
+                                </Button>
+                            </div>
+                        </div>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        {/* Table */}
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b border-border bg-muted/50">
+                                        <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
+                                            Cover
+                                        </th>
+                                        <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
+                                            Title
+                                        </th>
+                                        <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
+                                            Type
+                                        </th>
+                                        <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
+                                            Status
+                                        </th>
+                                        <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
+                                            Created At
+                                        </th>
+                                        <th className="text-left p-4 font-medium text-sm text-muted-foreground uppercase tracking-wider">
+                                            Actions
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {currentComics.length ? (
+                                        <>
+                                            {currentComics.map((comic) => (
                                                 <tr
                                                     key={comic.id}
                                                     className="border-b border-border hover:bg-muted/30 transition-colors"
@@ -244,11 +246,23 @@ const Dashboard = () => {
                                                     </td>
                                                 </tr>
                                             ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                        </>
+                                    ) : (
+                                        <tr className="text-destructive text-center h-28">
+                                            <td
+                                                colSpan={6}
+                                                className="text-2xl italic font-bold"
+                                            >
+                                                comic not found
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
 
-                            {/* Pagination */}
+                        {/* Pagination */}
+                        {currentComics.length > 0 && (
                             <div className="flex items-center justify-between p-4 border-t border-border">
                                 <div className="text-sm text-muted-foreground">
                                     Showing{" "}
@@ -313,13 +327,9 @@ const Dashboard = () => {
                                     </Button>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
-                ) : (
-                    <div className="text-4xl font-bold text-center border min-h-screen">
-                        <div>NOT FOUND COMICS</div>
-                    </div>
-                )}
+                        )}
+                    </CardContent>
+                </Card>
             </div>
         </AdminLayout>
     );
