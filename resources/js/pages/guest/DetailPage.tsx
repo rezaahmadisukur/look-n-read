@@ -4,13 +4,15 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { IChapter, IComic } from "@/types/index.type";
+import { IChapter, IComic, IGenre } from "@/types/index.type";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 interface IComicChapter extends IComic {
     chapters: IChapter[];
+    genres: IGenre[];
 }
 
 const DetailPage = () => {
@@ -36,15 +38,17 @@ const DetailPage = () => {
         }, 3000);
     }, [fetchData]);
 
+    console.log(comic);
+
     return (
         <>
             <Navbar />
             <GuestLayout>
                 <section>
                     {/* Start: Comic Image and Detail Comic */}
-                    <div className="container w-full flex gap-5 items-center">
+                    <div className="container w-full flex gap-5 items-center flex-col lg:flex-row">
                         {/* Left: Image */}
-                        <div className="w-1/6">
+                        <div className="w-2/6 lg:w-1/6">
                             <div className="aspect-[2/3] bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all">
                                 {isLoading ? (
                                     <Skeleton className="w-full h-full" />
@@ -58,7 +62,7 @@ const DetailPage = () => {
                             </div>
                         </div>
                         {/* Right: Detail Comic */}
-                        <div className="w-5/6">
+                        <div className="w-full lg:w-5/6">
                             <Table>
                                 <TableBody className="text-md">
                                     <TableRow>
@@ -152,10 +156,28 @@ const DetailPage = () => {
                     {/* End: Comic Image and Detail Comic */}
 
                     {/* Start: Genre  */}
-                    <div className="my-10 flex gap-3">
-                        <Badge className="text-md">Action</Badge>
-                        <Badge className="text-md">Advanture</Badge>
-                        <Badge className="text-md">Comedy</Badge>
+                    <div className="my-10 flex flex-wrap gap-3">
+                        {comic?.genres.length ? (
+                            <>
+                                {comic?.genres.map((genre) => (
+                                    <Fragment key={genre.id}>
+                                        {isLoading ? (
+                                            <Skeleton className="w-28 h-10" />
+                                        ) : (
+                                            <Badge className="text-md">
+                                                {genre.name}
+                                            </Badge>
+                                        )}
+                                    </Fragment>
+                                ))}
+                            </>
+                        ) : (
+                            <div className="cols-span-4">
+                                <p className="font-bold text-xl text-destructive">
+                                    Genres Not Found
+                                </p>
+                            </div>
+                        )}
                     </div>
                     {/* End: Genre */}
 
@@ -164,7 +186,7 @@ const DetailPage = () => {
                         <h2 className="py-5 font-semibold text-lg">
                             Synopsis: {comic?.title}
                         </h2>
-                        <p>{comic?.synopsis}</p>
+                        <p className="text-justify">{comic?.synopsis}</p>
                     </div>
                     {/* End: Synopsis */}
                 </section>
@@ -176,57 +198,59 @@ const DetailPage = () => {
                             Chapter: {comic?.title}
                         </h2>
                         {/* Start: Chapter Button */}
-                        <div className="grid grid-cols-5 gap-5">
-                            {comic?.chapters.length ? (
-                                <>
-                                    {comic?.chapters.map((chap) => (
-                                        <>
-                                            {isLoading ? (
-                                                <Skeleton className="h-16 w-full" />
-                                            ) : (
-                                                <Button
-                                                    key={chap.id}
-                                                    variant={"outline"}
-                                                    className="hover:bg-primary hover:text-background h-auto flex justify-start"
-                                                >
-                                                    <Link
-                                                        to={`/read/${comic.slug}/${chap.number}`}
+                        <ScrollArea className="h-72 w-full rounded-md">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-5">
+                                {comic?.chapters.length ? (
+                                    <>
+                                        {comic?.chapters.map((chap) => (
+                                            <Fragment key={chap.id}>
+                                                {isLoading ? (
+                                                    <Skeleton className="h-16 w-full" />
+                                                ) : (
+                                                    <Button
+                                                        key={chap.id}
+                                                        variant={"outline"}
+                                                        className="hover:bg-primary hover:text-background h-auto flex justify-start"
                                                     >
-                                                        <div className="flex flex-col items-start">
-                                                            <span className="text-lg font-semibold">
-                                                                {chap.title}
-                                                            </span>
-                                                            <span className="text-sm font-light">
-                                                                {chap.created_at &&
-                                                                    new Date(
-                                                                        chap.created_at
-                                                                    ).toLocaleString(
-                                                                        "en-EN",
-                                                                        {
-                                                                            day: "numeric",
-                                                                            month: "numeric",
-                                                                            year: "numeric",
-                                                                            hour: "numeric",
-                                                                            minute: "numeric",
-                                                                        }
-                                                                    )}
-                                                            </span>
-                                                        </div>
-                                                    </Link>
-                                                </Button>
-                                            )}
-                                        </>
-                                    ))}
-                                </>
-                            ) : (
-                                <Button
-                                    variant={"outline"}
-                                    className="hover:bg-primary hover:text-background h-auto text-destructive italic col-span-5"
-                                >
-                                    No Chapter 😑
-                                </Button>
-                            )}
-                        </div>
+                                                        <Link
+                                                            to={`/read/${comic.slug}/${chap.number}`}
+                                                        >
+                                                            <div className="flex flex-col items-start">
+                                                                <span className="text-lg font-semibold">
+                                                                    {chap.title}
+                                                                </span>
+                                                                <span className="text-sm font-light">
+                                                                    {chap.created_at &&
+                                                                        new Date(
+                                                                            chap.created_at
+                                                                        ).toLocaleString(
+                                                                            "en-EN",
+                                                                            {
+                                                                                day: "numeric",
+                                                                                month: "numeric",
+                                                                                year: "numeric",
+                                                                                hour: "numeric",
+                                                                                minute: "numeric",
+                                                                            }
+                                                                        )}
+                                                                </span>
+                                                            </div>
+                                                        </Link>
+                                                    </Button>
+                                                )}
+                                            </Fragment>
+                                        ))}
+                                    </>
+                                ) : (
+                                    <Button
+                                        variant={"outline"}
+                                        className="hover:bg-primary hover:text-background h-auto text-destructive italic col-span-5"
+                                    >
+                                        No Chapter 😑
+                                    </Button>
+                                )}
+                            </div>
+                        </ScrollArea>
                         {/* End: Chapter Button */}
                     </div>
                 </section>
