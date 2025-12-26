@@ -1,13 +1,14 @@
 import GuestLayout from "@/components/layouts/guest/GuestLayout";
-import Navbar from "@/components/layouts/guest/Navbar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { IChapter, IComic, IGenre } from "@/types/index.type";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { formatDistance } from "date-fns";
 import { id } from "date-fns/locale/id";
+import { Navbar } from "@/components/layouts/guest/Navbar";
+import { customIdLocale } from "@/lib/utils";
 
 document.title = "Homepage";
 
@@ -35,103 +36,22 @@ export default function HomePage() {
         { name: "Manhua", count: categoryCounts.manhua, seed: "manhua" },
     ];
 
-    // Helper function to get proper image URL
-    const getImageUrl = (imagePath: string | null | undefined): string | undefined => {
-        if (!imagePath) return undefined;
-        // If it already starts with http/https, return as-is
-        if (imagePath.startsWith('http')) return imagePath;
-        // If it starts with storage/, return as-is 
-        if (imagePath.startsWith('storage/')) return `/${imagePath}`;
-        // Otherwise, prepend /storage/
-        return `/storage/${imagePath}`;
-    };
-
-    // Helper function to get preview comics for a category
-    const getCategoryPreviewComics = (categoryName: string) => {
-        const categoryKey = categoryName.toLowerCase();
-        return comics.filter(comic => 
-            comic.type?.toLowerCase() === categoryKey
-        ).slice(0, 4);
-    };
-
-    // Helper function to safely format dates
-    const safeFormatDistance = (dateValue: string | Date | undefined | null) => {
+    const fetchComics = useCallback(async () => {
+        setIsLoading(true);
         try {
-            if (!dateValue) return 'Unknown';
-            const date = dateValue instanceof Date ? dateValue : new Date(dateValue);
-            if (isNaN(date.getTime())) return 'Invalid date';
-            return formatDistance(date, new Date(), { addSuffix: true, locale: id });
+            const res = await axios.get("/api/comics");
+            setComics(res.data.data);
         } catch (error) {
-            console.warn('Date formatting error:', error);
-            return 'Unknown';
+            console.error(error);
         }
-    };
+    }, [setComics]);
 
     useEffect(() => {
-        const loadData = async () => {
-            setIsLoading(true);
-            setIsCountsLoading(true);
-            
-            try {
-                // Load comics and category counts in parallel
-                const [comicsRes, countsRes] = await Promise.all([
-                    axios.get("/api/comics").catch(() => ({ data: { data: [] } })),
-                    axios.get("/api/comics/stats").catch(() => ({ data: { data: { manga: 0, manhwa: 0, manhua: 0 } } }))
-                ]);
-                
-                // Safely handle comics data
-                const comicsData = comicsRes.data.data || comicsRes.data || [];
-                setComics(Array.isArray(comicsData) ? comicsData : []);
-                
-                // Update category counts from API response
-                if (countsRes.data?.data) {
-                    setCategoryCounts({
-                        manga: countsRes.data.data.manga || 0,
-                        manhwa: countsRes.data.data.manhwa || 0,
-                        manhua: countsRes.data.data.manhua || 0
-                    });
-                }
-            } catch (error) {
-                console.error("Error loading data:", error);
-                // Fallback: try to load just comics
-                try {
-                    const comicsRes = await axios.get("/api/comics");
-                    const comicsData = comicsRes.data.data || comicsRes.data || [];
-                    const safeComicsData = Array.isArray(comicsData) ? comicsData : [];
-                    setComics(safeComicsData);
-                    
-                    // Count categories from the comics data as fallback
-                    const counts = safeComicsData.reduce((acc: {[key: string]: number}, comic: IComicChapter) => {
-                        const type = comic?.type?.toLowerCase() || 'manga';
-                        acc[type] = (acc[type] || 0) + 1;
-                        return acc;
-                    }, {});
-                    
-                    setCategoryCounts({
-                        manga: counts.manga || 0,
-                        manhwa: counts.manhwa || 0,
-                        manhua: counts.manhua || 0
-                    });
-                } catch (fallbackError) {
-                    console.error("Fallback error:", fallbackError);
-                    // Set empty state if everything fails
-                    setComics([]);
-                    setCategoryCounts({
-                        manga: 0,
-                        manhwa: 0,
-                        manhua: 0
-                    });
-                }
-            } finally {
-                setIsCountsLoading(false);
-                setTimeout(() => {
-                    setIsLoading(false);
-                }, 1500);
-            }
-        };
-        
-        loadData();
-    }, []);
+        fetchComics();
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 3000);
+    }, [fetchComics]);
 
     const handleCategoryClick = async (categoryName: string) => {
         try {
@@ -256,19 +176,30 @@ export default function HomePage() {
                                     className="group cursor-pointer"
                                 >
                                     <Link to={`/${i.slug}`}>
-                                        <div className="aspect-[2/3] bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all">
+                                        <div className="aspect-[2/3] bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all relative">
                                             {isLoading ? (
                                                 <Skeleton className="w-full h-full" />
                                             ) : (
-                                                <img
-                                                    src={getImageUrl(i.cover_image)}
-                                                    alt={`Comic ${i.title}`}
-                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                    onError={(e) => {
-                                                        const target = e.target as HTMLImageElement;
-                                                        target.src = `https://picsum.photos/seed/${i.slug}/200/300`;
-                                                    }}
-                                                />
+                                                <>
+                                                    <img
+                                                        src={i.cover_image}
+                                                        alt={`Comic ${i.title}`}
+                                                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                                                    />
+                                                    <img
+                                                        src={`/assets/flags/${
+                                                            i.type.toLowerCase() ===
+                                                            "manga"
+                                                                ? "jp-original.webp"
+                                                                : i.type.toLowerCase() ===
+                                                                  "manhua"
+                                                                ? "cn-original.webp"
+                                                                : "kr-original.webp"
+                                                        }`}
+                                                        alt={i.type}
+                                                        className="absolute top-1 right-1 w-8 rounded-sm"
+                                                    />
+                                                </>
                                             )}
                                         </div>
                                     </Link>
@@ -279,37 +210,65 @@ export default function HomePage() {
                                         </div>
                                     ) : (
                                         <div className="mt-2">
-                                            <h3 className="text-sm font-medium text-gray-300 truncate group-hover:text-purple-400 transition-colors">
-                                                {i.title}
-                                            </h3>
-                                            <Link
-                                                to={`/read/${i.slug}/${i.chapters.at(-1)?.number
+                                            <Link to={`/${i.slug}`}>
+                                                <h3 className="text-sm font-medium text-gray-300 truncate hover:text-purple-400 transition-colors hover:underline">
+                                                    {i.title}
+                                                </h3>
+                                            </Link>
+                                            {i.chapters.length > 0 ? (
+                                                <Link
+                                                    to={`/read/${i.slug}/${
+                                                        i.chapters.at(-1)
+                                                            ?.number
                                                     }`}
-                                            >
+                                                >
+                                                    <Button
+                                                        variant={"outline"}
+                                                        className="text-xs text-gray-600 w-full mt-3 flex justify-between"
+                                                    >
+                                                        <span>
+                                                            {
+                                                                i.chapters.at(
+                                                                    -1
+                                                                )?.title
+                                                            }
+                                                        </span>
+                                                        <span>
+                                                            {formatDistance(
+                                                                new Date(
+                                                                    String(
+                                                                        i.chapters.at(
+                                                                            -1
+                                                                        )
+                                                                            ?.created_at
+                                                                    )
+                                                                ),
+                                                                new Date(),
+                                                                {
+                                                                    locale: customIdLocale,
+                                                                    includeSeconds:
+                                                                        true,
+                                                                }
+                                                            )}
+                                                        </span>
+                                                    </Button>
+                                                </Link>
+                                            ) : (
                                                 <Button
                                                     variant={"outline"}
-                                                    className="text-xs text-gray-600 w-full mt-3 flex justify-between"
+                                                    disabled
+                                                    className="text-xs text-destructive w-full mt-3 flex justify-center cursor-not-allowed"
                                                 >
-                                                    <span>
-                                                        {
-                                                            i.chapters.at(-1)
-                                                                ?.title
-                                                        }
-                                                    </span>
-                                                    <span>
-                                                        {safeFormatDistance(
-                                                            i.chapters.at(-1)?.created_at
-                                                        )}
-                                                    </span>
+                                                    No Chapter
                                                 </Button>
-                                            </Link>
+                                            )}
                                         </div>
                                     )}
                                 </div>
                             ))
                         ) : (
                             <div className="col-span-4">
-                                <p className="text-destructive font-bold text-5xl italic">
+                                <p className="text-destructive font-bold text-5xl">
                                     Comic Not Found 😱
                                 </p>
                             </div>

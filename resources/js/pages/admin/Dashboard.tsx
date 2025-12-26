@@ -24,8 +24,9 @@ import AdminLayout from "@/components/layouts/admin/AdminLayout";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { ComicsType } from "@/types/index.type";
-import { getApi } from "@/services/api";
 import { toast } from "sonner";
+
+document.title = "Dashboard - admin";
 
 const Dashboard = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -58,19 +59,8 @@ const Dashboard = () => {
 
     useEffect(() => {
         const load = async () => {
-            const token = localStorage.getItem("token");
-            try {
-                const response = await axios.get("/api/auth/admin/comics", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-                setComics(response?.data?.data || []);
-            } catch (error) {
-                console.error("Error loading comics:", error);
-                setComics([]);
-                toast.error("Failed to load comics");
-            }
+            const response = await axios.get("/api/comics");
+            setComics(response?.data.data);
         };
         load();
     }, []);
