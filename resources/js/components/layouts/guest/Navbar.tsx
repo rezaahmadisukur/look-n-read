@@ -242,7 +242,7 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar04Props>(
                                         onKeyDown={handleKeyDown}
                                         type="search"
                                         placeholder={searchPlaceholder}
-                                        className="h-9 w-[150px] md:w-[200px] ps-8"
+                                        className="h-8 w-[150px] md:w-[200px] ps-8"
                                     />
                                     <div className="text-muted-foreground absolute inset-y-0 start-0 flex items-center justify-center ps-2 pointer-events-none">
                                         <SearchIcon size={16} />
@@ -251,6 +251,7 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar04Props>(
                                 <Button
                                     type="button"
                                     size="sm"
+                                    className="h-8"
                                     onClick={handleSearchAction}
                                 >
                                     Search

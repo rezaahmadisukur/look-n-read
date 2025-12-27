@@ -55,8 +55,5 @@ class Comic extends Model
                 $comic->slug = Str::slug($comic->title);
             }
         });
-
-        // Logic 'forceDeleting' KITA HAPUS
-        // Karena tugas hapus file sudah diambil alih oleh ComicController (deleteDirectory)
     }
 }

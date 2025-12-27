@@ -1,5 +1,11 @@
 import { IChildren } from "@/types/index.type";
 import Snowfall from "react-snowfall";
+import customSnowflake from "/public/assets/images/snowflake.png";
+
+const image = document.createElement("img");
+image.src = customSnowflake;
+
+const images = [image, image];
 
 const GuestLayout = ({ children }: IChildren) => {
     return (
@@ -8,16 +14,20 @@ const GuestLayout = ({ children }: IChildren) => {
                 {children}
             </div>
             <Snowfall
-                snowflakeCount={500}
-                speed={[0, 1]}
-                wind={[-1, 0]}
+                snowflakeCount={200}
+                speed={[0.5, 3]}
+                wind={[-0.5, 2]}
                 color="#00bcd4"
+                radius={[5, 20]}
+                rotationSpeed={[-1, 1]}
+                opacity={[0.5, 1]}
                 style={{
                     position: "fixed",
                     width: "100vw",
                     height: "100vh",
                     zIndex: "revert",
                 }}
+                images={images}
             />
         </div>
     );

@@ -42,8 +42,5 @@ class Chapter extends Model
                 $chapter->slug = Str::slug($titleSource);
             }
         });
-
-        // Logic 'deleting' KITA HAPUS
-        // Karena tugas hapus file sudah diambil alih oleh ChapterController (deleteDirectory)
     }
 }

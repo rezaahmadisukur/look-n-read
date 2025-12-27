@@ -49,3 +49,8 @@ export interface IGenre {
     id: number;
     name: string;
 }
+
+export interface IComicChapter extends IComic {
+    chapters: IChapter[];
+    genres: IGenre[];
+}
