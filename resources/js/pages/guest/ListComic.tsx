@@ -1,8 +1,13 @@
 import CardComic from "@/components/guest-comp/CardComic";
 import HeaderPage from "@/components/guest-comp/HeaderPage";
+import NoComic from "@/components/guest-comp/NoComic";
 import GuestLayout from "@/components/layouts/guest/GuestLayout";
 import { Navbar } from "@/components/layouts/guest/Navbar";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
     Select,
     SelectContent,
@@ -12,8 +17,10 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { IGenre } from "@/types/index.type";
 import axios from "axios";
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 const ListComic = () => {
@@ -22,15 +29,35 @@ const ListComic = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [selectType, setSelectType] = useState<string>("all");
     const [selectStatus, setSelectStatus] = useState<string>("all");
+    const [selectGenre, setSelectGenre] = useState<string>("all");
+    const [genres, setGenres] = useState<IGenre[]>([]);
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const currentPage = Number(searchParams.get("page")) || 1;
+
+    const ITEM_PER_PAGE = 20;
+    const TOTAL_PAGE = Math.ceil(comics?.length / ITEM_PER_PAGE);
+    const currentComics = comics?.slice(
+        (currentPage - 1) * ITEM_PER_PAGE,
+        currentPage * ITEM_PER_PAGE
+    );
 
     const typeParams = searchParams.get("type") || "";
-    const statusParams = searchParams.get("stauts") || "";
+    const statusParams = searchParams.get("status") || "";
+    const genreParams = searchParams.get("genre") || "";
+
+    useEffect(() => {
+        document.title = "List Comic";
+    }, []);
 
     const fetchComic = useCallback(async () => {
         setIsLoading(true);
         try {
-            const params: { type?: string; status?: string } = {};
-
+            const params: {
+                type?: string;
+                status?: string;
+                genre?: string;
+            } = {};
+            if (genreParams) params.genre = genreParams;
             if (typeParams) params.type = typeParams;
             if (statusParams) params.status = statusParams;
 
@@ -43,23 +70,64 @@ const ListComic = () => {
         } finally {
             setIsLoading(false);
         }
-    }, [statusParams, typeParams]);
+    }, [statusParams, typeParams, genreParams]);
 
     useEffect(() => {
         fetchComic();
-    }, [fetchComic]);
+    }, [currentPage, fetchComic]);
+
+    useEffect(() => {
+        if (!searchParams.has("page")) {
+            const params = new URLSearchParams(searchParams);
+            params.set("page", "1");
+            setSearchParams(params, { replace: true });
+        }
+    }, [searchParams, setSearchParams]);
+
+    const handlePage = (page: number) => {
+        const params = new URLSearchParams(searchParams);
+        params.set("page", page.toString());
+        setSearchParams(params);
+
+        // Scroll ke atas biar enak UX-nya
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    const fetchGenres = useCallback(async () => {
+        try {
+            const response = await axios.get("/api/genres");
+            setGenres(response.data.data);
+        } catch (error) {
+            console.log("Fetch Genres", error);
+        }
+    }, []);
+
+    useEffect(() => {
+        fetchGenres();
+    }, [fetchGenres]);
 
     const handleSelect = () => {
-        const newParams: { type?: string; status?: string } = {};
-        if (selectType && selectType.toLowerCase() !== "all") {
-            newParams.type = selectType;
+        const params = new URLSearchParams(searchParams);
+
+        if (selectGenre && selectGenre !== "all") {
+            params.set("genre", selectGenre);
+        } else {
+            params.delete("genre");
         }
 
-        if (selectStatus && selectStatus.toLowerCase() !== "all") {
-            newParams.status = selectStatus;
+        if (selectStatus && selectStatus !== "all") {
+            params.set("status", selectStatus);
+        } else {
+            params.delete("status");
         }
 
-        setSearchParams(newParams);
+        if (selectType && selectType !== "all") {
+            params.set("type", selectType);
+        } else {
+            params.delete("type");
+        }
+
+        setSearchParams(params);
     };
 
     return (
@@ -70,6 +138,53 @@ const ListComic = () => {
 
                 {/* Filteres */}
                 <div className="my-10 flex gap-5">
+                    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                        <DialogTrigger asChild className="w-1/4">
+                            <Button
+                                variant="outline"
+                                className="flex justify-start capitalize"
+                            >
+                                {selectGenre !== "all"
+                                    ? `Genre: ${selectGenre
+                                          .split("-")
+                                          .join(" ")}`
+                                    : "Genre"}
+                            </Button>
+                        </DialogTrigger>
+                        <DialogContent className="w-[320px] sm:w-[420px] my-20">
+                            <ScrollArea className="h-72 w-full rounded-md border">
+                                <RadioGroup
+                                    defaultValue="comfortable"
+                                    className="grid grid-cols-2"
+                                    onValueChange={(value) =>
+                                        setSelectGenre(value)
+                                    }
+                                    value={selectGenre}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <RadioGroupItem value="all" id="all" />
+                                        <Label htmlFor="all">Genre</Label>
+                                    </div>
+                                    {genres.length > 0 &&
+                                        genres.map((genre) => (
+                                            <div className="flex items-center gap-3">
+                                                <RadioGroupItem
+                                                    value={genre.slug}
+                                                    id={genre.slug}
+                                                />
+                                                <Label htmlFor={genre.slug}>
+                                                    {genre.name}
+                                                </Label>
+                                            </div>
+                                        ))}
+                                </RadioGroup>
+                            </ScrollArea>
+                            <Button onClick={() => setIsOpen(false)}>
+                                Select
+                            </Button>
+                        </DialogContent>
+                    </Dialog>
+
                     <Select
                         value={selectStatus}
                         onValueChange={(value) => setSelectStatus(value)}
@@ -112,16 +227,84 @@ const ListComic = () => {
                     <Button onClick={handleSelect}>Search</Button>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 my-10 bg-neutral-900 p-5">
-                    {comics.length > 0 &&
-                        comics.map((comic) => (
-                            <Fragment>
-                                <CardComic
-                                    comic={comic}
-                                    isLoading={isLoading}
-                                />
-                            </Fragment>
+                {isLoading ? (
+                    <div className="flex justify-center items-center ">
+                        <img src="/assets/gifs/zoro-loading.gif" alt="" />
+                    </div>
+                ) : (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 my-10 bg-neutral-900 p-10 rounded-md">
+                        {currentComics.length > 0 ? (
+                            <>
+                                {currentComics.map((comic) => (
+                                    <Fragment>
+                                        <CardComic
+                                            comic={comic}
+                                            isLoading={isLoading}
+                                        />
+                                    </Fragment>
+                                ))}
+                            </>
+                        ) : (
+                            <div className="flex justify-center items-center col-span-2 sm:col-span-3 md:col-span-4 lg:col-span-6">
+                                <p className="text-destructive font-bold text-xl sm:text-2xl mdtext-3xl">
+                                    No Comic Found
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                )}
+                <div className="flex items-center justify-between p-4 border-t border-border">
+                    <div className="text-sm text-muted-foreground">
+                        Showing {(currentPage - 1) * ITEM_PER_PAGE + 1} to{" "}
+                        {Math.min(currentPage * ITEM_PER_PAGE, comics?.length)}{" "}
+                        of {comics?.length} entries
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant={"outline"}
+                            size={"icon"}
+                            disabled={currentPage === 1}
+                            onClick={() => {
+                                // setCurrentPage(Math.max(1, currentPage - 1));
+                                handlePage(Math.max(1, currentPage - 1));
+                            }}
+                        >
+                            <ChevronLeft />
+                        </Button>
+                        {Array.from(
+                            { length: TOTAL_PAGE },
+                            (_, i) => i + 1
+                        ).map((page) => (
+                            <Button
+                                key={page}
+                                variant={
+                                    currentPage === page ? "default" : "outline"
+                                }
+                                size={"icon"}
+                                onClick={() => {
+                                    // setCurrentPage(page);
+                                    handlePage(page);
+                                }}
+                            >
+                                {page}
+                            </Button>
                         ))}
+                        <Button
+                            variant={"outline"}
+                            size={"icon"}
+                            onClick={() => {
+                                // setCurrentPage(
+                                //     Math.min(TOTAL_PAGE, currentPage + 1)
+                                // );
+                                handlePage(
+                                    Math.min(TOTAL_PAGE, currentPage + 1)
+                                );
+                            }}
+                        >
+                            <ChevronRight />
+                        </Button>
+                    </div>
                 </div>
             </GuestLayout>
         </>

@@ -65,9 +65,6 @@ const FormAddChapter = () => {
     const handleAddComic = async (values: FormSchema) => {
         setIsLoading(true);
         const formData = new FormData();
-
-        // Mapping data ke FormData sesuai permintaan Backend Laravel
-        // Pastikan 'id' ada, kalau tidak ambil dari values (yang sudah di-set di useEffect)
         formData.append("comic_id", values.comic_id.toString());
         formData.append("number", values.chapNum.toString());
 

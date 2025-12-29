@@ -21,6 +21,8 @@ import {
     useNavigate,
     useSearchParams,
 } from "react-router-dom";
+import { Context } from "@/context/Context";
+import axios from "axios";
 
 // --- COMPONENTS ---
 const Logo = (props: React.SVGAttributes<SVGElement>) => {
@@ -109,6 +111,9 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar04Props>(
         const currentQuery = searchParams.get("search") || "";
         const [searchQuery, setSearchQuery] = useState(currentQuery);
 
+        const { setExpandedCategory, setCategoryComics, setIsCategoryLoading } =
+            React.useContext(Context);
+
         useEffect(() => {
             const checkWidth = () => {
                 if (containerRef.current)
@@ -147,6 +152,28 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar04Props>(
             }
         };
 
+        const handleCategoryClick = async (categoryName: string) => {
+            try {
+                setExpandedCategory(categoryName);
+                setIsCategoryLoading(true);
+
+                const res = await axios.get(
+                    `/api/comics?type=${categoryName.toLowerCase()}`
+                );
+                const categoryData = res.data.data || res.data || [];
+                setCategoryComics(
+                    Array.isArray(categoryData) ? categoryData : []
+                );
+            } catch (error) {
+                console.error("Error fetching category comics:", error);
+                setCategoryComics([]);
+            } finally {
+                setTimeout(() => {
+                    setIsCategoryLoading(false);
+                }, 3000);
+            }
+        };
+
         return (
             <header
                 ref={combinedRef}
@@ -182,7 +209,7 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar04Props>(
                                                 >
                                                     <button
                                                         onClick={() =>
-                                                            onCategoryClick?.(
+                                                            handleCategoryClick(
                                                                 link.label
                                                             )
                                                         }
@@ -223,7 +250,7 @@ export const Navbar = React.forwardRef<HTMLElement, Navbar04Props>(
                                             <NavigationMenuItem key={i}>
                                                 <NavigationMenuLink
                                                     onClick={() =>
-                                                        onCategoryClick?.(
+                                                        handleCategoryClick(
                                                             link.label
                                                         )
                                                     }

@@ -13,7 +13,7 @@ interface IProps {
 const CardComic = ({ comic, isLoading }: IProps) => {
     return (
         <div className="group cursor-pointer">
-            <Link to={`/${comic.slug}`}>
+            <Link to={`/comic-detail/${comic.slug}`}>
                 <div className="aspect-[2/3] bg-gradient-to-br from-slate-800 to-slate-900 rounded-lg overflow-hidden border border-white/10 hover:border-purple-500/50 transition-all relative">
                     {isLoading ? (
                         <Skeleton className="w-full h-full" />
@@ -46,7 +46,7 @@ const CardComic = ({ comic, isLoading }: IProps) => {
                 </div>
             ) : (
                 <div className="mt-2">
-                    <Link to={`/${comic.slug}`}>
+                    <Link to={`/comic-detail/${comic.slug}`}>
                         <h3 className="text-sm font-medium text-gray-300 truncate hover:text-purple-400 transition-colors hover:underline">
                             {comic.title}
                         </h3>
@@ -59,7 +59,7 @@ const CardComic = ({ comic, isLoading }: IProps) => {
                         >
                             <Button
                                 variant={"outline"}
-                                className="text-[10px] sm:text-xs text-neutral-50 w-full mt-3 flex justify-between flex-wrap hover:text-purple-400"
+                                className="text-[8px] sm:text-xs text-neutral-50 w-full mt-3 flex justify-between flex-wrap hover:text-purple-400"
                             >
                                 <span>{comic.chapters.at(-1)?.title}</span>
                                 <span>
