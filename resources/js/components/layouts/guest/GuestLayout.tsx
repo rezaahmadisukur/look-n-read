@@ -5,6 +5,7 @@ import { Navbar } from "./Navbar";
 import axios from "axios";
 import { useContext, useState } from "react";
 import { Context } from "@/context/Context";
+import ModalComicCategory from "@/components/guest-comp/ModalComicCategory";
 
 const image = document.createElement("img");
 image.src = customSnowflake;
@@ -35,6 +36,8 @@ const GuestLayout = ({ children }: IChildren) => {
                     images={images}
                 />
             </div>
+
+            <ModalComicCategory />
         </>
     );
 };

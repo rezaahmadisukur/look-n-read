@@ -47,9 +47,11 @@ class ComicController extends Controller
             });
         }
 
-        $comics = $query->latest()->paginate(12);
+        $comics = $query->latest()->get();
 
-        return response()->json($comics);
+        return response()->json([
+            'data' => $comics
+        ]);
     }
 
     /**

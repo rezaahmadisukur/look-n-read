@@ -94,8 +94,8 @@ export default function Chapters() {
             <div className="p-8">
                 {/* Header Halaman */}
                 <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold">
-                        Daftar Chapter: {comic?.title}
+                    <h1 className="text-2xl font-bold line-clamp-1">
+                        Daftar Chapter: {comic?.title.substring(0, 30)}...
                     </h1>
 
                     {/* Tombol Tambah Chapter (Mengarah ke route upload yang tadi kita buat) */}

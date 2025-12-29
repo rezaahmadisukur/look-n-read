@@ -27,7 +27,26 @@ function App() {
         <BrowserRouter>
             <AuthProvider>
                 <Routes>
-                    {/* Admin Auth Routes */}
+                    {/*****************  Guest Routes *****************/}
+                    <Route path="/" element={<HomePage />} />
+
+                    <Route
+                        path="/comic-detail/:slug"
+                        element={<DetailPage />}
+                    />
+
+                    <Route
+                        path="/read/:slug/:chapterNumber"
+                        element={<ReadChapter />}
+                    />
+
+                    <Route path="/genre/:slug" element={<GenreComic />} />
+
+                    <Route path="/comics" element={<SearchComic />} />
+
+                    <Route path="/list-comic" element={<ListComic />} />
+
+                    {/*****************  Admin Routes *****************/}
                     <Route path="/admin/login" element={<AdminAuth />} />
                     <Route
                         path="/admin"
@@ -93,22 +112,6 @@ function App() {
                             </ProtectedRoute>
                         }
                     />
-
-                    {/*****************  Guest Routes *****************/}
-                    <Route path="/" element={<HomePage />} />
-
-                    <Route path="/:slug" element={<DetailPage />} />
-
-                    <Route
-                        path="/read/:slug/:chapterNumber"
-                        element={<ReadChapter />}
-                    />
-
-                    <Route path="/genre/:slug" element={<GenreComic />} />
-
-                    <Route path="/comics" element={<SearchComic />} />
-
-                    <Route path="/list-comic" element={<ListComic />} />
 
                     {/* Fallback */}
                     <Route path="*" element={<NotFound />} />

@@ -27,9 +27,10 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import axios, { AxiosError } from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { ChevronLeft, X } from "lucide-react";
+import { ChevronLeft, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import GenreModalSelector from "@/components/guest-comp/GenreModalSelector";
+import { useState } from "react";
 
 const formAddComicSchema = z.object({
     title: z.string().min(1, { message: "Title is required" }),
@@ -48,6 +49,7 @@ const formAddComicSchema = z.object({
 const FormAddComic = () => {
     const token = localStorage.getItem("token");
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const form = useForm<z.infer<typeof formAddComicSchema>>({
         resolver: zodResolver(formAddComicSchema),
         defaultValues: {
@@ -78,6 +80,7 @@ const FormAddComic = () => {
         values.genres.forEach((genreId) => {
             formData.append("genres[]", genreId.toString());
         });
+        setIsLoading(true);
         try {
             const response = await axios.post(
                 "/api/auth/admin/comics",
@@ -96,6 +99,8 @@ const FormAddComic = () => {
         } catch (error) {
             const axiosError = error as AxiosError;
             console.error("Error: ", axiosError.response?.data);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -321,8 +326,16 @@ const FormAddComic = () => {
                                         <Button
                                             className="w-full"
                                             type="submit"
+                                            disabled={isLoading}
                                         >
-                                            Add Comic
+                                            {isLoading ? (
+                                                <>
+                                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />{" "}
+                                                    Uploading...
+                                                </>
+                                            ) : (
+                                                "Add Comic"
+                                            )}
                                         </Button>
                                         <Button
                                             onClick={() =>
