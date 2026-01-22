@@ -16,28 +16,28 @@ Modern comic web app for browsing and reading comics per chapter, complete with 
 
 ### Guest (Public)
 
--   Comic list & comic detail
--   Read chapters (image pages)
--   Genre list (for filtering)
+- Comic list & comic detail
+- Read chapters (image pages)
+- Genre list (for filtering)
 
 ### Admin (Protected)
 
--   Admin login (Sanctum token)
--   Comic CRUD
--   Chapter CRUD
--   Genre CRUD
+- Admin login (Sanctum token)
+- Comic CRUD
+- Chapter CRUD
+- Genre CRUD
 
 Planning docs & auth concept: see `PLANNING.md` and `MIDDLEWARE_CONCEPT.md`.
 
 ## Tech Stack
 
--   PHP **^8.1**
--   Laravel **^10.10**
--   Laravel Sanctum **^3.3**
--   Node.js + npm
--   Vite **^5**
--   React + TypeScript
--   Tailwind CSS
+- PHP **^8.1**
+- Laravel **^10.10**
+- Laravel Sanctum **^3.3**
+- Node.js + npm
+- Vite **^5**
+- React + TypeScript
+- Tailwind CSS
 
 ## Routing Structure (Summary)
 
@@ -45,40 +45,40 @@ Planning docs & auth concept: see `PLANNING.md` and `MIDDLEWARE_CONCEPT.md`.
 
 All web routes are redirected to the `welcome` view so React Router handles routing:
 
--   `GET /{any?}` → `resources/views/welcome.blade.php` (see `routes/web.php`)
+- `GET /{any?}` → `resources/views/welcome.blade.php` (see `routes/web.php`)
 
 ### API
 
 Guest/Public (no login):
 
--   `GET /api/comics`
--   `GET /api/comics/{comic:slug}`
--   `GET /api/chapters`
--   `GET /api/chapters/{chapter:id}`
--   `GET /api/read/{comic:slug}/{chapter:number}`
--   `GET /api/genres`
+- `GET /api/comics`
+- `GET /api/comics/{comic:slug}`
+- `GET /api/chapters`
+- `GET /api/chapters/{chapter:id}`
+- `GET /api/read/{comic:slug}/{chapter:number}`
+- `GET /api/genres`
 
 Admin (requires Sanctum token):
 
--   `POST /api/auth/admin/login`
--   `POST /api/auth/admin/logout`
--   `GET /api/auth/admin/me`
--   `POST /api/auth/admin/comics`
--   `PUT /api/auth/admin/comics/{comic:slug}`
--   `DELETE /api/auth/admin/comics/{comic:id}`
--   `POST /api/auth/admin/chapters`
--   `PUT /api/auth/admin/chapters/{chapter:id}`
--   `DELETE /api/auth/admin/chapters/{chapter:id}`
--   `POST /api/auth/admin/genres`
--   `PUT /api/auth/admin/genres/{id}`
--   `DELETE /api/auth/admin/genres/{id}`
+- `POST /api/auth/admin/login`
+- `POST /api/auth/admin/logout`
+- `GET /api/auth/admin/me`
+- `POST /api/auth/admin/comics`
+- `PUT /api/auth/admin/comics/{comic:slug}`
+- `DELETE /api/auth/admin/comics/{comic:id}`
+- `POST /api/auth/admin/chapters`
+- `PUT /api/auth/admin/chapters/{chapter:id}`
+- `DELETE /api/auth/admin/chapters/{chapter:id}`
+- `POST /api/auth/admin/genres`
+- `PUT /api/auth/admin/genres/{id}`
+- `DELETE /api/auth/admin/genres/{id}`
 
 ## Requirements
 
--   PHP 8.1+
--   Composer
--   Node.js 18+ (recommended)
--   MySQL/MariaDB (or adjust `DB_CONNECTION`)
+- PHP 8.1+
+- Composer
+- Node.js 18+ (recommended)
+- MySQL/MariaDB (or adjust `DB_CONNECTION`)
 
 If you use **Laragon (Windows)**: make sure Apache/Nginx + MySQL are running.
 
@@ -125,10 +125,10 @@ php artisan db:seed
 
 Available seeders:
 
--   Default admin: `Database\\Seeders\\CreateAdminUser`
-    -   Email: `admin@looknread.com`
-    -   Password: `admin123`
--   Sample comics: `Database\\Seeders\\ComicSeeder`
+- Default admin: `Database\\Seeders\\CreateAdminUser`
+    - Email: `admin@looknread.com`
+    - Password: `admin123`
+- Sample comics: `Database\\Seeders\\ComicSeeder`
 
 > Note: the comic seeder sets `cover_image` like `comics/covers/one-piece.jpg`. Make sure the assets/images exist as needed.
 
@@ -176,17 +176,17 @@ php artisan test
 
 Admin login returns a token. Use that token on subsequent requests:
 
--   Header: `Authorization: Bearer <token>`
+- Header: `Authorization: Bearer <token>`
 
 ## Folder Conventions (Summary)
 
--   `app/Http/Controllers` — API controllers
--   `app/Models` — main models (`Comic`, `Chapter`, `Genre`, etc.)
--   `database/migrations` — database schema
--   `database/seeders` — seeders (includes default admin)
--   `resources/js` — React + TypeScript frontend
--   `routes/api.php` — API endpoints
--   `routes/web.php` — SPA catch-all
+- `app/Http/Controllers` — API controllers
+- `app/Models` — main models (`Comic`, `Chapter`, `Genre`, etc.)
+- `database/migrations` — database schema
+- `database/seeders` — seeders (includes default admin)
+- `resources/js` — React + TypeScript frontend
+- `routes/api.php` — API endpoints
+- `routes/web.php` — SPA catch-all
 
 ## License
 
@@ -212,28 +212,28 @@ Web app komik modern untuk browsing dan membaca komik per-chapter, lengkap denga
 
 ### Guest (Public)
 
--   List komik & detail komik
--   Baca chapter (halaman gambar)
--   List genre (untuk kebutuhan filter)
+- List komik & detail komik
+- Baca chapter (halaman gambar)
+- List genre (untuk kebutuhan filter)
 
 ### Admin (Protected)
 
--   Login admin (Sanctum token)
--   CRUD komik
--   CRUD chapter
--   CRUD genre
+- Login admin (Sanctum token)
+- CRUD komik
+- CRUD chapter
+- CRUD genre
 
 Dokumen perencanaan & konsep auth: lihat `PLANNING.md` dan `MIDDLEWARE_CONCEPT.md`.
 
 ## Tech Stack
 
--   PHP **^8.1**
--   Laravel **^10.10**
--   Laravel Sanctum **^3.3**
--   Node.js + npm
--   Vite **^5**
--   React + TypeScript
--   Tailwind CSS
+- PHP **^8.1**
+- Laravel **^10.10**
+- Laravel Sanctum **^3.3**
+- Node.js + npm
+- Vite **^5**
+- React + TypeScript
+- Tailwind CSS
 
 ## Struktur Routing (Ringkas)
 
@@ -241,40 +241,40 @@ Dokumen perencanaan & konsep auth: lihat `PLANNING.md` dan `MIDDLEWARE_CONCEPT.m
 
 Semua route web diarahkan ke view `welcome` agar React Router yang mengatur:
 
--   `GET /{any?}` → `resources/views/welcome.blade.php` (lihat `routes/web.php`)
+- `GET /{any?}` → `resources/views/welcome.blade.php` (lihat `routes/web.php`)
 
 ### API
 
 Guest/Public (tanpa login):
 
--   `GET /api/comics`
--   `GET /api/comics/{comic:slug}`
--   `GET /api/chapters`
--   `GET /api/chapters/{chapter:id}`
--   `GET /api/read/{comic:slug}/{chapter:number}`
--   `GET /api/genres`
+- `GET /api/comics`
+- `GET /api/comics/{comic:slug}`
+- `GET /api/chapters`
+- `GET /api/chapters/{chapter:id}`
+- `GET /api/read/{comic:slug}/{chapter:number}`
+- `GET /api/genres`
 
 Admin (butuh token Sanctum):
 
--   `POST /api/auth/admin/login`
--   `POST /api/auth/admin/logout`
--   `GET /api/auth/admin/me`
--   `POST /api/auth/admin/comics`
--   `PUT /api/auth/admin/comics/{comic:slug}`
--   `DELETE /api/auth/admin/comics/{comic:id}`
--   `POST /api/auth/admin/chapters`
--   `PUT /api/auth/admin/chapters/{chapter:id}`
--   `DELETE /api/auth/admin/chapters/{chapter:id}`
--   `POST /api/auth/admin/genres`
--   `PUT /api/auth/admin/genres/{id}`
--   `DELETE /api/auth/admin/genres/{id}`
+- `POST /api/auth/admin/login`
+- `POST /api/auth/admin/logout`
+- `GET /api/auth/admin/me`
+- `POST /api/auth/admin/comics`
+- `PUT /api/auth/admin/comics/{comic:slug}`
+- `DELETE /api/auth/admin/comics/{comic:id}`
+- `POST /api/auth/admin/chapters`
+- `PUT /api/auth/admin/chapters/{chapter:id}`
+- `DELETE /api/auth/admin/chapters/{chapter:id}`
+- `POST /api/auth/admin/genres`
+- `PUT /api/auth/admin/genres/{id}`
+- `DELETE /api/auth/admin/genres/{id}`
 
 ## Requirements
 
--   PHP 8.1+
--   Composer
--   Node.js 18+ (disarankan)
--   MySQL/MariaDB (atau sesuaikan `DB_CONNECTION`)
+- PHP 8.1+
+- Composer
+- Node.js 18+ (disarankan)
+- MySQL/MariaDB (atau sesuaikan `DB_CONNECTION`)
 
 Jika kamu pakai **Laragon (Windows)**: pastikan Apache/Nginx + MySQL sudah jalan.
 
@@ -321,10 +321,10 @@ php artisan db:seed
 
 Seeder yang tersedia:
 
--   Admin default: `Database\\Seeders\\CreateAdminUser`
-    -   Email: `admin@looknread.com`
-    -   Password: `admin123`
--   Sample komik: `Database\\Seeders\\ComicSeeder`
+- Admin default: `Database\\Seeders\\CreateAdminUser`
+    - Email: `admin@looknread.com`
+    - Password: `admin123`
+- Sample komik: `Database\\Seeders\\ComicSeeder`
 
 > Catatan: seeder komik mengisi `cover_image` seperti `comics/covers/one-piece.jpg`. Pastikan asset/gambar tersedia sesuai kebutuhan kamu.
 
@@ -372,17 +372,17 @@ php artisan test
 
 Login admin mengembalikan token. Gunakan token tersebut pada request berikutnya:
 
--   Header: `Authorization: Bearer <token>`
+- Header: `Authorization: Bearer <token>`
 
 ## Konvensi Folder (Ringkas)
 
--   `app/Http/Controllers` — controller API
--   `app/Models` — model utama (`Comic`, `Chapter`, `Genre`, dll.)
--   `database/migrations` — skema database
--   `database/seeders` — seeding (termasuk admin default)
--   `resources/js` — React + TypeScript frontend
--   `routes/api.php` — endpoint API
--   `routes/web.php` — SPA catch-all
+- `app/Http/Controllers` — controller API
+- `app/Models` — model utama (`Comic`, `Chapter`, `Genre`, dll.)
+- `database/migrations` — skema database
+- `database/seeders` — seeding (termasuk admin default)
+- `resources/js` — React + TypeScript frontend
+- `routes/api.php` — endpoint API
+- `routes/web.php` — SPA catch-all
 
 ## Lisensi
 

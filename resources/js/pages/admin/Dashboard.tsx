@@ -68,7 +68,7 @@ const Dashboard = () => {
     };
 
     useEffect(() => {
-        document.title = "Dashboard - admin";
+        document.title = "Look N Read | Dashboard";
     }, []);
 
     const handleDeleteComic = async (id: number) => {

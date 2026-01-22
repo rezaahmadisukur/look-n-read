@@ -30,7 +30,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ChevronLeft, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import GenreModalSelector from "@/components/guest-comp/GenreModalSelector";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const formAddComicSchema = z.object({
     title: z.string().min(1, { message: "Title is required" }),
@@ -50,6 +50,10 @@ const FormAddComic = () => {
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
     const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        document.title = "Look N Read | Add Comic";
+    }, []);
 
     const form = useForm<z.infer<typeof formAddComicSchema>>({
         resolver: zodResolver(formAddComicSchema),

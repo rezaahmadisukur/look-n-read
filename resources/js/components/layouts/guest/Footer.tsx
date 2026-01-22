@@ -7,33 +7,6 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const footerLinks = [
-    {
-        title: "Overview",
-        href: "#",
-    },
-    {
-        title: "Features",
-        href: "#",
-    },
-    {
-        title: "Pricing",
-        href: "#",
-    },
-    {
-        title: "Careers",
-        href: "#",
-    },
-    {
-        title: "Help",
-        href: "#",
-    },
-    {
-        title: "Privacy",
-        href: "#",
-    },
-];
-
 const Footer = () => {
     return (
         <footer className="border-t w-full border-b bg-background/95 backdrop-blur px-4 md:px-6">
@@ -43,19 +16,6 @@ const Footer = () => {
                     <div>
                         <h1 className="font-bold text-2xl">Look N Read</h1>
                     </div>
-
-                    <ul className="mt-6 flex items-center gap-4 flex-wrap">
-                        {footerLinks.map(({ title, href }) => (
-                            <li key={title}>
-                                <Link
-                                    to={href}
-                                    className="text-muted-foreground hover:text-foreground"
-                                >
-                                    {title}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
                 </div>
                 <Separator />
                 <div className="py-8 flex flex-col-reverse sm:flex-row items-center justify-between gap-x-2 gap-y-5 px-6 xl:px-0">
@@ -63,7 +23,7 @@ const Footer = () => {
                     <span className="text-muted-foreground">
                         &copy; {new Date().getFullYear()}{" "}
                         <Link to="/" target="_blank">
-                            Shadcn UI Blocks
+                            Look N Read Officer
                         </Link>
                         . All rights reserved.
                     </span>

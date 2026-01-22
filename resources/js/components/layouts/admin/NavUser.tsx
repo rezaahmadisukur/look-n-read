@@ -52,7 +52,7 @@ export function NavUser({
                                     alt={user.name}
                                 />
                                 <AvatarFallback className="rounded-lg">
-                                    CN
+                                    A
                                 </AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
@@ -80,7 +80,7 @@ export function NavUser({
                                         alt={user.name}
                                     />
                                     <AvatarFallback className="rounded-lg">
-                                        CN
+                                        A
                                     </AvatarFallback>
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -93,21 +93,6 @@ export function NavUser({
                                 </div>
                             </div>
                         </DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <User />
-                                Account
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <User />
-                                Billing
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <User />
-                                Notifications
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={handleLogout}>
                             <User />

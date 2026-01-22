@@ -13,14 +13,13 @@ import useFetch from "@/hooks/use-fetch";
 
 export default function HomePage() {
     const [comics, setComics] = useState<IComicChapter[]>([]);
-    // const [isLoading, setIsLoading] = useState<boolean>(false);
     const [genres, setGenres] = useState<IGenre[]>([]);
 
     const { isLoading } = useContext(Context);
     const { getAllComic } = useFetch();
 
     useEffect(() => {
-        document.title = "Homepage";
+        document.title = "Look N Read | Home Page";
     }, []);
 
     const fetchComics = useCallback(async () => {

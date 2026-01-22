@@ -18,7 +18,6 @@ class ComicController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        // 1. PENTING: Tambahkan with('genres') biar datanya ke-load
         $query = Comic::with(['genres', 'chapters']);
 
         // Search by title or author
@@ -39,8 +38,7 @@ class ComicController extends Controller
             $query->where('type', $request->input('type'));
         }
 
-        // 2. BARU: Filter by Genre
-        // Logic: Cari komik yang PUNYA (whereHas) genre dengan ID tertentu
+        // Filter by Genre
         if ($request->has('genre')) {
             $genreParam = $request->input('genre');
             $query->whereHas('genres', function ($q) use ($genreParam) {
