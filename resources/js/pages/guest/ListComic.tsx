@@ -42,7 +42,7 @@ const ListComic = () => {
 
     const currentPage = Number(searchParams.get("page")) || 1;
 
-    const ITEM_PER_PAGE = 24;
+    const ITEM_PER_PAGE = 18;
     const TOTAL_PAGE = Math.ceil(comics?.length / ITEM_PER_PAGE);
     const currentComics = comics?.slice(
         (currentPage - 1) * ITEM_PER_PAGE,
@@ -54,7 +54,7 @@ const ListComic = () => {
     const genreParams = searchParams.get("genre") || "";
 
     useEffect(() => {
-        document.title = "List Comic";
+        document.title = "Look N Read | List Comic";
     }, []);
 
     const fetchComic = useCallback(async () => {
@@ -149,7 +149,7 @@ const ListComic = () => {
                     <HeaderPage>List Comic</HeaderPage>
 
                     {/* Filteres */}
-                    <div className="my-10 flex gap-5">
+                    <div className="my-10 flex gap-5 flex-wrap lg:flex-nowrap">
                         <Dialog open={isOpen} onOpenChange={setIsOpen}>
                             <DialogTrigger asChild className="w-1/4">
                                 <Button
